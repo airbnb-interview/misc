@@ -42,11 +42,13 @@ esac
 
 echo "Language: $LANG_NAME"
 
-# Install git if not present
+# Install git if not present.
+# Some environments wrap apt-get in a shell function that adds sudo. When this
+# script runs via "curl | sh", child shells don't inherit that function, so we
+# call sudo explicitly.
 if ! command -v git > /dev/null 2>&1; then
-  apt-get update
-  mkdir -p /tmp/apt-cache/archives/partial
-  apt-get -o dir::cache="/tmp/apt-cache" install -y git
+  sudo apt-get update > /tmp/apt-get.update.log 2>&1
+  sudo apt-get install -y git
 fi
 
 # Diagnostics
