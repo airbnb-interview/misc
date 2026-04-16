@@ -24,7 +24,7 @@ echo ""
 LANG_CHOICE=""
 while true; do
   printf "Enter choice [1-6]: "
-  read LANG_CHOICE
+  read LANG_CHOICE </dev/tty
   case "$LANG_CHOICE" in
     1|2|3|4|5|6) break ;;
     *) echo "Invalid choice. Please enter a number from 1 to 6." ;;
