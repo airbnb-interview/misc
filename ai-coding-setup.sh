@@ -74,12 +74,14 @@ esac
 # Project setup
 if [ "$LANG_CHOICE" = "2" ]; then
   git clone https://github.com/airbnb-interview/java-starter.git project
+  PROJECT_NOTE="empty Gradle project cloned"
 else
   mkdir -p project
   cd project
   git init
   echo "# $LANG_NAME" > README.md
   cd ..
+  PROJECT_NOTE="empty git project initialized"
 fi
 
 cd project
@@ -118,12 +120,6 @@ cat > agents.md << 'EOF'
 EOF
 
 # Summary
-if [ "$LANG_CHOICE" = "2" ]; then
-  PROJECT_NOTE="empty Gradle project cloned"
-else
-  PROJECT_NOTE="empty git project initialized"
-fi
-
 echo ""
 echo "┌─────────────────────────────────────────────────┐"
 echo "│              Environment ready                  │"
