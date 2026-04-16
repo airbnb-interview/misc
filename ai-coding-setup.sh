@@ -44,7 +44,7 @@ echo "Language: $LANG_NAME"
 
 # Install git if not present
 if ! command -v git > /dev/null 2>&1; then
-  apt-get update > /tmp/apt-get.update.log
+  apt-get update
   mkdir -p /tmp/apt-cache/archives/partial
   apt-get -o dir::cache="/tmp/apt-cache" install -y git
 fi
