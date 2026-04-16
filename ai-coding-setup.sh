@@ -42,6 +42,16 @@ esac
 
 echo "Language: $LANG_NAME"
 
+# Install git if not present.
+# Some environments wrap apt-get in a shell function that adds sudo. When this
+# script runs via "curl | sh", child shells don't inherit that function, so we
+# call sudo explicitly.
+if ! command -v git > /dev/null 2>&1; then
+  echo "git not found, installing..."
+  sudo apt-get update > /tmp/apt-get.update.log 2>&1
+  sudo apt-get install -y git
+fi
+
 # Diagnostics
 echo "User: $(whoami)"
 echo "Git: $(git --version)"
@@ -64,12 +74,14 @@ esac
 # Project setup
 if [ "$LANG_CHOICE" = "2" ]; then
   git clone https://github.com/airbnb-interview/java-starter.git project
+  PROJECT_NOTE="empty Gradle project cloned"
 else
   mkdir -p project
   cd project
   git init
   echo "# $LANG_NAME" > README.md
   cd ..
+  PROJECT_NOTE="empty git project initialized"
 fi
 
 cd project
@@ -108,12 +120,6 @@ cat > agents.md << 'EOF'
 EOF
 
 # Summary
-if [ "$LANG_CHOICE" = "2" ]; then
-  PROJECT_NOTE="empty Gradle project cloned"
-else
-  PROJECT_NOTE="empty git project initialized"
-fi
-
 echo ""
 echo "┌─────────────────────────────────────────────────┐"
 echo "│              Environment ready                  │"
