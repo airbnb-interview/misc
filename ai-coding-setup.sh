@@ -47,6 +47,7 @@ echo "Language: $LANG_NAME"
 # script runs via "curl | sh", child shells don't inherit that function, so we
 # call sudo explicitly.
 if ! command -v git > /dev/null 2>&1; then
+  echo "git not found, installing..."
   sudo apt-get update > /tmp/apt-get.update.log 2>&1
   sudo apt-get install -y git
 fi
