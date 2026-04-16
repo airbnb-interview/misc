@@ -42,6 +42,12 @@ esac
 
 echo "Language: $LANG_NAME"
 
+# Install git if not present
+if ! command -v git > /dev/null 2>&1; then
+  apt-get update > /tmp/apt-get.update.log
+  apt-get install -y git
+fi
+
 # Diagnostics
 echo "User: $(whoami)"
 echo "Git: $(git --version)"
