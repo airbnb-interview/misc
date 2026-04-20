@@ -72,7 +72,9 @@ case "$LANG_CHOICE" in
 esac
 
 # Project setup
-if [ "$LANG_CHOICE" = "2" ]; then
+if [ -d "$WORKDIR/project" ] && [ -n "$(ls -A "$WORKDIR/project" 2>/dev/null)" ]; then
+  PROJECT_NOTE="existing project found"
+elif [ "$LANG_CHOICE" = "2" ]; then
   git clone https://github.com/airbnb-interview/java-starter.git project
   PROJECT_NOTE="empty Gradle project cloned"
 else
