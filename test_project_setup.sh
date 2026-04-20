@@ -4,6 +4,7 @@
 
 PASS=0
 FAIL=0
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 assert_equal() {
   label="$1"
@@ -20,38 +21,51 @@ assert_equal() {
   fi
 }
 
-# Mirrors the exact guard condition from ai-coding-setup.sh.
-project_note() {
-  workdir="$1"
-  if [ -d "$workdir/project" ] && [ -n "$(ls -A "$workdir/project" 2>/dev/null)" ]; then
-    echo "existing project found"
-  else
-    echo "would proceed with setup"
-  fi
-}
+# Source the real script without running main.
+AI_CODING_SETUP_SOURCED=1
+. "$SCRIPT_DIR/ai-coding-setup.sh"
+
+# Stub git so the test doesn't need network or a real git install.
+git() { :; }
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
-# Case 1: no project directory -> setup should proceed
+run_setup() {
+  workdir="$1"
+  lang_choice="$2"
+  lang_name="$3"
+  (
+    WORKDIR="$workdir"
+    LANG_CHOICE="$lang_choice"
+    LANG_NAME="$lang_name"
+    cd "$workdir"
+    setup_project
+    echo "$PROJECT_NOTE"
+  )
+}
+
+# Case 1: no project directory -> setup proceeds
+mkdir "$WORK/case1"
 assert_equal \
   "no project dir: setup proceeds" \
-  "would proceed with setup" \
-  "$(project_note "$WORK")"
+  "empty git project initialized" \
+  "$(run_setup "$WORK/case1" "1" "Python")"
 
-# Case 2: empty project directory -> setup should still proceed
-mkdir "$WORK/project"
+# Case 2: empty project directory -> setup still proceeds
+mkdir -p "$WORK/case2/project"
 assert_equal \
   "empty project dir: setup proceeds" \
-  "would proceed with setup" \
-  "$(project_note "$WORK")"
+  "empty git project initialized" \
+  "$(run_setup "$WORK/case2" "1" "Python")"
 
-# Case 3: non-empty project directory -> skip setup, reuse existing
-echo "existing content" > "$WORK/project/file.txt"
+# Case 3: non-empty project directory -> skip, reuse existing
+mkdir -p "$WORK/case3/project"
+echo "existing content" > "$WORK/case3/project/file.txt"
 assert_equal \
   "non-empty project dir: skip setup" \
   "existing project found" \
-  "$(project_note "$WORK")"
+  "$(run_setup "$WORK/case3" "1" "Python")"
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
