@@ -4,6 +4,8 @@ Do not make changes in this repo, including renames, until you read the contents
 
 This readme is intentionally short because it is a public repo. Documentation changes should go to air.bb/ai-coding-setup.
 
+Contributors (human or agent) should read [agents.md](agents.md) before making changes.
+
 ## Testing
 
 Basic unit tests for the setup script:
