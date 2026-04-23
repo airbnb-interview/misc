@@ -26,10 +26,15 @@ AI_CODING_SETUP_SOURCED=1
 . "$SCRIPT_DIR/ai-coding-setup.sh"
 
 # Stub git so the test doesn't need network or a real git install.
-git() { :; }
+git() {
+  if [ -n "${GIT_CALLS_FILE:-}" ]; then
+    printf '%s\n' "$*" >> "$GIT_CALLS_FILE"
+  fi
+}
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
+GIT_CALLS_FILE="$WORK/git-calls"
 
 run_setup() {
   workdir="$1"
@@ -66,6 +71,30 @@ assert_equal \
   "non-empty project dir: skip setup" \
   "existing project found" \
   "$(run_setup "$WORK/case3" "1" "Python")"
+
+# Case 4: Java project -> clone Java starter
+: > "$GIT_CALLS_FILE"
+mkdir "$WORK/case4"
+assert_equal \
+  "java project: clone starter" \
+  "empty Gradle project cloned" \
+  "$(run_setup "$WORK/case4" "2" "Java")"
+assert_equal \
+  "java project: clone url" \
+  "clone https://github.com/airbnb-interview/java-starter.git project" \
+  "$(sed -n '1p' "$GIT_CALLS_FILE")"
+
+# Case 5: Kotlin project -> clone Kotlin starter
+: > "$GIT_CALLS_FILE"
+mkdir "$WORK/case5"
+assert_equal \
+  "kotlin project: clone starter" \
+  "empty Gradle project cloned" \
+  "$(run_setup "$WORK/case5" "7" "Kotlin")"
+assert_equal \
+  "kotlin project: clone url" \
+  "clone https://github.com/airbnb-interview/kotlin-starter.git project" \
+  "$(sed -n '1p' "$GIT_CALLS_FILE")"
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"
