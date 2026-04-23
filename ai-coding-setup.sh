@@ -10,6 +10,9 @@ setup_project() {
   elif [ "$LANG_CHOICE" = "2" ]; then
     git clone https://github.com/airbnb-interview/java-starter.git project
     PROJECT_NOTE="empty Gradle project cloned"
+  elif [ "$LANG_CHOICE" = "7" ]; then
+    git clone https://github.com/airbnb-interview/kotlin-starter.git project
+    PROJECT_NOTE="empty Gradle project cloned"
   else
     mkdir -p project
     cd project
@@ -37,15 +40,16 @@ main() {
   echo "  4) TypeScript"
   echo "  5) Golang"
   echo "  6) C++"
+  echo "  7) Kotlin"
   echo ""
 
   LANG_CHOICE=""
   while true; do
-    printf "Enter choice [1-6]: "
+    printf "Enter choice [1-7]: "
     read LANG_CHOICE </dev/tty
     case "$LANG_CHOICE" in
-      1|2|3|4|5|6) break ;;
-      *) echo "Invalid choice. Please enter a number from 1 to 6." ;;
+      1|2|3|4|5|6|7) break ;;
+      *) echo "Invalid choice. Please enter a number from 1 to 7." ;;
     esac
   done
 
@@ -56,6 +60,7 @@ main() {
     4) LANG_NAME="TypeScript" ;;
     5) LANG_NAME="Golang" ;;
     6) LANG_NAME="C++" ;;
+    7) LANG_NAME="Kotlin" ;;
   esac
 
   echo "Language: $LANG_NAME"
@@ -87,6 +92,7 @@ main() {
     4) echo "Node: $(node --version 2>&1)" ; echo "TypeScript: $(tsc --version 2>&1)" ;;
     5) echo "Go: $(go version 2>&1)" ;;
     6) echo "C++: $(g++ --version 2>&1 | head -1)" ;;
+    7) echo "Kotlin: $(kotlinc -version 2>&1)" ;;
   esac
 
   setup_project
