@@ -26,6 +26,7 @@ Do **not** add `Co-Authored-By:` trailers (or any equivalent attribution) that n
 
 - Keep commit messages very short.
 - Keep PR titles and descriptions very short.
+- Tag @mockitoguy and @numberten as reviewers on PRs.
 
 ## Documentation
 
